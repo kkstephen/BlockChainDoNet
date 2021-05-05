@@ -13,8 +13,7 @@ namespace Coinran
         public IList<Konan> List { get; private set; }
 
         public int Total { get; set; }
-        public int Difficulty { get; set; }
-
+     
         public static BlockChain Current { get; } = new BlockChain();
 
         public BlockChain()
@@ -22,7 +21,7 @@ namespace Coinran
             this.List = new List<Konan>();
         }
 
-        public Konan Create(string data, string prevhash)
+        public Konan Create(string data, string prevhash, int diff)
         {
             Konan konan = new Konan()
             {
@@ -30,8 +29,8 @@ namespace Coinran
                 PrevHash = prevhash,
                 TimeStamp = DateTime.Now.Ticks.ToString(),
                 Nonce = "0",
-                Difficulty = this.Difficulty,
-                Data = data
+                Difficulty = diff,
+                Transaction = new KonanTrans()
             };
 
             return konan;

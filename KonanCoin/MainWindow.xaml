@@ -14,7 +14,7 @@
         <RichTextBox x:Name="txt_box" HorizontalAlignment="Left" Height="158" Margin="19,190,0,0" VerticalAlignment="Top" Width="545">
             <FlowDocument>
                 <Paragraph>
-                    <Run Text="RichTextBox"/>
+                    <Run Text=""/>
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>

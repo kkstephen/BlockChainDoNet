@@ -33,54 +33,35 @@ namespace KonanCoin
 
         private void BtnMine_Click(object sender, RoutedEventArgs e)
         {
-            BlockChain.Current.Difficulty = 1;
+            this.log_text("start mining: the first block");
+
             BlockChain.Current.Total = int.Parse(this.txTotal.Text);
 
-            Konan block = BlockChain.Current.Create("The first block: Hello world!", "0");
+            BlockServer server = new BlockServer();
 
-            this.txt_box.AppendText("\r\n");
-            this.txt_box.AppendText("Create first block.\r\n"); 
+            server.Difficulty = 1;
 
-            //start mining
-            Task.Run(() =>
-            {
-                for (int i = 0; i < BlockChain.Current.Total; i++)
-                {
-                    if (i % 10 == 0 && i >= 10) BlockChain.Current.Difficulty++;
+            server.OnMiningSuccess += Server_OnMiningSuccess;
+            server.OnMiningEnd += Server_OnMiningEnd;
 
-                    int nonce = this.mining(block);
-
-                    BlockChain.Current.Add(block, nonce);
-
-                    block = BlockChain.Current.Create("block no." + i, BlockChain.Current.List[i].Hash);
-
-                    this.Dispatcher.InvokeAsync(() =>
-                    {
-                        this.txt_box.AppendText(block.TimeStamp + " d:" + block.Difficulty + " n:" + nonce + " " + block.PrevHash + "\r\n");
-                    });
-
-                    Task.Delay(200);
-                }
-            });
-
-
-            this.txt_box.AppendText(DateTime.Now.ToString() + ": done.");
+            server.start();
         }
 
-        public int mining(Konan konan)
+        private void Server_OnMiningEnd(object sender, ServerEventArgs e)
         {
-            int n = 0;
+            this.log_text(e.Message);
+        }
 
-            string target = new string('0', BlockChain.Current.Difficulty);
+        private void Server_OnMiningSuccess(object sender, MiningEventArgs e)
+        {             
+            this.log_text(e.Date + " d:" + e.Diff + " h: " + e.Hash);            
+        }
 
-            while (!BlockChain.Current.IsValid(konan.GetHash(), target))
-            {
-                n++;
-
-                konan.Nonce = n.ToString();            
-            }
-
-            return n;
+        private void log_text(string msg)
+        {
+            this.Dispatcher.Invoke(() => {
+                this.txt_box.AppendText(msg + "\r\n");
+            });
         }
     }
 }

@@ -16,11 +16,11 @@ namespace Coinran
         public string TimeStamp { get; set; }
         public int Difficulty { get; set; }
         public string Nonce { get; set; }
-        public string Data { get; set; }
+        public KonanTrans Transaction { get; set; }
 
         public string GetHash()
         {
-            string str = this.PrevHash + this.TimeStamp + this.Nonce + this.Data;
+            string str = this.PrevHash + this.TimeStamp + this.Nonce + this.Transaction.GetHash();
 
             return BlockChain.Sha3Cal(str);
         }
